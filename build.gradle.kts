@@ -18,6 +18,15 @@ repositories {
 	mavenCentral()
 }
 
+
+sonarqube {
+	properties {
+		setProperty ("sonar.projectKey", "GonzaloBaez_backend-desapp-api")
+		setProperty ("sonar.organization", "gonzalobaez")
+		setProperty ("sonar.host.url", "https://sonarcloud.io")
+	}
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
