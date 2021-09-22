@@ -21,9 +21,9 @@ repositories {
 
 sonarqube {
 	properties {
-		setProperty ("sonar.projectKey", "GonzaloBaez_backend-desapp-api")
-		setProperty ("sonar.organization", "gonzalobaez")
-		setProperty ("sonar.host.url", "https://sonarcloud.io")
+		property ("sonar.projectKey", "GonzaloBaez_backend-desapp-api")
+		property ("sonar.organization", "gonzalobaez")
+		property ("sonar.host.url", "https://sonarcloud.io")
 	}
 }
 
