@@ -36,6 +36,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.junit.vintage:junit-vintage-engine:5.8.0")
 	implementation("log4j:log4j:1.2.17")
 
 }

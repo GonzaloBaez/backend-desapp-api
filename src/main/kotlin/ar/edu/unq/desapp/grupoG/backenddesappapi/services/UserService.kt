@@ -24,4 +24,8 @@ class UserService {
     fun findAll(): MutableIterable<User> {
         return repository!!.findAll()
     }
+
+    fun clearDatabase(){
+        repository.deleteAllInBatch()
+    }
 }
