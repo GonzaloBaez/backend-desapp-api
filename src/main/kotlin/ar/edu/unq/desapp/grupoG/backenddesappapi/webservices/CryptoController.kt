@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -18,6 +19,11 @@ class CryptoController {
     @GetMapping("quote/{cryptoName}")
     fun quote(@PathVariable("cryptoName") cryptoName : String) : ResponseEntity<Any>{
         return ResponseEntity(cryptoService.quote(cryptoName),HttpStatus.OK)
+    }
+
+    @GetMapping("quotes")
+    fun allCryptos() : ResponseEntity<List<CryptoDTO>>{
+        return ResponseEntity(cryptoService.allCryptos(),HttpStatus.OK)
     }
 
     @Bean
