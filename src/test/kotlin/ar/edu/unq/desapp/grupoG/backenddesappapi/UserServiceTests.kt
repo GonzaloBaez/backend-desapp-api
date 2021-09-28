@@ -1,8 +1,8 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi
-import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.DuplicateWalletException
+
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.UserBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,7 +31,7 @@ class UserServiceTests {
 
 	@Test
 	fun savingAUserAndGettingIt() {
-		var userToRegister:User = userBuilder.anyUser()
+		var userToRegister:User = userBuilder.build()
 		userService.save(userToRegister)
 		var registeredUser:User= userService.findById(userToRegister.id)
 
@@ -46,8 +46,8 @@ class UserServiceTests {
 
 	@Test
 	fun savingShouldFailIfTwoUsersHasSameWallet(){
-		var userOne : User = userBuilder.withWallet("12345678")
-		var userTwo : User = userBuilder.withWallet("12345678")
+		var userOne : User = userBuilder.withWallet("12345678").build()
+		var userTwo : User = userBuilder.withWallet("12345678").build()
 
 		userService.save(userOne)
 
@@ -57,8 +57,8 @@ class UserServiceTests {
 
 	@Test
 	fun gettingAllUsers(){
-		var userOne = userBuilder.withWallet("12345678")
-		var userTwo = userBuilder.withWallet("04040400")
+		var userOne = userBuilder.withWallet("12345678").build()
+		var userTwo = userBuilder.withWallet("04040400").build()
 		userService.save(userOne)
 		userService.save(userTwo)
 
