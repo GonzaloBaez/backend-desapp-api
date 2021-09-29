@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "2.5.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id ("org.sonarqube") version "3.3"
+	id("jacoco")
 	war
 	kotlin("jvm") version "1.5.21"
 	kotlin("plugin.spring") version "1.5.21"
@@ -17,13 +18,31 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
 	mavenCentral()
 }
-
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+	dependsOn(tasks.test) // tests are required to run before generating the report
+}
 
 sonarqube {
 	properties {
 		property ("sonar.projectKey", "GonzaloBaez_backend-desapp-api")
 		property ("sonar.organization", "gonzalobaez")
 		property ("sonar.host.url", "https://sonarcloud.io")
+		property ("sonar.login","795ec1c68f8a2a0cb50f4cd4ce1082b3d4e6ccba")
+		property ("sonar.coverage.jacoco.xmlReportPaths", "build/jacocoXML")
+	}
+}
+jacoco {
+	toolVersion = "0.8.7"
+	reportsDirectory.set(layout.buildDirectory.dir("build/reports/jacoco"))
+}
+tasks.jacocoTestReport {
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		xml.outputLocation.set(File("build/jacocoXML"))
 	}
 }
 
