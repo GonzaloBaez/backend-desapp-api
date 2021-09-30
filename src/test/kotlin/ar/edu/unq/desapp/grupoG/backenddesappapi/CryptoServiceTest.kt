@@ -1,8 +1,10 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.CryptoBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -18,15 +20,23 @@ import org.springframework.web.client.RestTemplate
 @RunWith(MockitoJUnitRunner::class)
 class CryptoServiceTest {
 
+    lateinit var cryptoBuilder : CryptoBuilder
+
     @Mock
     lateinit var restTemplate : RestTemplate
 
     @InjectMocks
     var cryptoService = CryptoService()
 
+    @Before
+    fun setUp(){
+        cryptoBuilder = CryptoBuilder()
+    }
+
     @Test
     fun gettingBNBUSDTCrypto(){
-        var crypto = CryptoDTO("BNBUSDT",375.0)
+        var crypto = cryptoBuilder.build()
+
         Mockito.`when`(restTemplate.getForEntity("https://api1.binance.com/api/v3/ticker/price?symbol=${crypto.symbol}",CryptoDTO::class.java))
             .thenReturn(ResponseEntity(crypto,HttpStatus.OK))
 
@@ -38,8 +48,8 @@ class CryptoServiceTest {
 
     @Test
     fun gettingAllCryptos(){
-        var cryp1 = CryptoDTO("BNBUSDT",375.0)
-        var cryp2 = CryptoDTO("ALICEUSDT",11.7)
+        var cryp1 = cryptoBuilder.build()
+        var cryp2 = cryptoBuilder.build()
 
         var allCryptos = listOf(cryp1,cryp2)
 
