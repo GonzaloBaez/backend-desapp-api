@@ -21,6 +21,7 @@ class CryptoController {
         return ResponseEntity(cryptoService.quote(cryptoName),HttpStatus.OK)
     }
 
+    @CrossOrigin(origins = ["http://localhost:3000"])
     @GetMapping("quotes")
     fun allCryptos() : ResponseEntity<List<CryptoDTO>>{
         return ResponseEntity(cryptoService.allCryptos(),HttpStatus.OK)
