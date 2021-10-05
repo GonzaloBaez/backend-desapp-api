@@ -22,17 +22,4 @@ class UserController {
     fun allUsers():MutableIterable<User>{
         return userService.findAll()
     }
-
-    @CrossOrigin(origins = ["http://localhost:3000"])
-    @PostMapping("/register")
-    fun register(@RequestBody user:User):ResponseEntity<Any>{
-      return try {
-          userService.save(user)
-          val responseHeader = HttpHeaders()
-          responseHeader.set("location","/api/users" + "/" + user.id)
-          ResponseEntity(responseHeader, HttpStatus.CREATED)
-      }catch (e:DataIntegrityViolationException){
-          ResponseEntity(HttpStatus.BAD_REQUEST)
-      }
-    }
 }

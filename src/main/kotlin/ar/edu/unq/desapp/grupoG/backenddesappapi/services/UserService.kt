@@ -39,4 +39,18 @@ class UserService {
     fun clearDatabase(){
         repository.deleteAllInBatch()
     }
+
+    fun findByEmail(email: String) : User{
+        val optional : Optional<User>
+
+        try{
+            optional = repository.findByEmail(email)
+        } catch (e : Exception){
+            throw e
+        }
+        if(!optional.isPresent){
+            throw NotFoundException("User not found with email $email")
+        }
+        return optional.get()
+    }
 }
