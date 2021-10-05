@@ -46,8 +46,8 @@ class UserServiceTests {
 
 	@Test
 	fun savingShouldFailIfTwoUsersHasSameWallet(){
-		var userOne : User = userBuilder.withWallet("12345678").build()
-		var userTwo : User = userBuilder.withWallet("12345678").build()
+		var userOne : User = userBuilder.withWallet("12345678").withEmail("asd@asd").build()
+		var userTwo : User = userBuilder.withWallet("12345678").withEmail("asd2@asd").build()
 
 		userService.save(userOne)
 
@@ -57,8 +57,8 @@ class UserServiceTests {
 
 	@Test
 	fun gettingAllUsers(){
-		var userOne = userBuilder.withWallet("12345678").build()
-		var userTwo = userBuilder.withWallet("04040400").build()
+		var userOne = userBuilder.withWallet("12345678").withEmail("asd@asd").build()
+		var userTwo = userBuilder.withWallet("04040400").withEmail("asd2@asd").build()
 		userService.save(userOne)
 		userService.save(userTwo)
 

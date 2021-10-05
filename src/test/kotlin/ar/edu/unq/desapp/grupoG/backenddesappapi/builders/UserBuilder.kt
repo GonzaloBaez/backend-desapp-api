@@ -18,4 +18,9 @@ class UserBuilder(
         this.wallet = wallet
         return this
     }
+
+    fun withEmail(email:String):UserBuilder{
+        this.email = email
+        return this
+    }
 }
