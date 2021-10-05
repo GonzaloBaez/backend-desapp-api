@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @EnableAutoConfiguration
+@CrossOrigin
 class AuthController {
     @Autowired
     lateinit var userService : UserService

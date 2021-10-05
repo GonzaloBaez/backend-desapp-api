@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/users")
+@CrossOrigin
 class UserController {
 
     @Autowired

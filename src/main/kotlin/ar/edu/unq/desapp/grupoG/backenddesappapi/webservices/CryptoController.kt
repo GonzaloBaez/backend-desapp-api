@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate
 
 @RestController
 @RequestMapping("/api/cryptos/")
+@CrossOrigin
 class CryptoController {
 
     @Autowired

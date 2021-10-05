@@ -14,6 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
+import java.util.*
 
 
 @Configuration
@@ -51,9 +55,10 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(httpSecurity: HttpSecurity) {
+        httpSecurity.addFilter(corsFilter())
         // We don't need CSRF for this example
         httpSecurity.csrf().disable() // dont authenticate this particular request
-            .authorizeRequests().antMatchers("/api/users","/register","/authenticate","/h2-console/**","/api/cryptos/quote","/api/dollar/")
+            .authorizeRequests().antMatchers("/api/users","/register","/authenticate","/h2-console/**")
                 .permitAll().anyRequest().authenticated().and().exceptionHandling()
                       .authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -61,5 +66,17 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
         http.headers().frameOptions().disable()
+    }
+
+    @Bean
+    fun corsFilter(): CorsFilter? {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin("http://localhost:3000")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
     }
 }
