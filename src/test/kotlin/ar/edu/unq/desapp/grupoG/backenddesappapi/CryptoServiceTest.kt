@@ -26,7 +26,7 @@ class CryptoServiceTest {
     lateinit var restTemplate : RestTemplate
 
     @InjectMocks
-    var cryptoService = CryptoService()
+    lateinit var cryptoService : CryptoService
 
     @Before
     fun setUp(){
