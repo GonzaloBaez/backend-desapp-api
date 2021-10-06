@@ -24,7 +24,7 @@ class DollarServiceTest {
     lateinit var restTemplate : RestTemplate
 
     @InjectMocks
-    var dollarService = DollarQuoteService()
+    lateinit var dollarService : DollarQuoteService
 
     @Before
     fun setUp(){
