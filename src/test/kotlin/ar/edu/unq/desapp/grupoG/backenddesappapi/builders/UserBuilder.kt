@@ -23,4 +23,9 @@ class UserBuilder(
         this.email = email
         return this
     }
+
+    fun withPassword(password: String): UserBuilder{
+        this.password = password
+        return this
+    }
 }
