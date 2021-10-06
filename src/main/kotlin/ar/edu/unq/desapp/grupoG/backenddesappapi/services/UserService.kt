@@ -20,12 +20,8 @@ class UserService {
     }
 
     fun findById(id:Long):User{
-        val optional : Optional<User>
-        try {
-            optional = repository!!.findById(id)
-        } catch (e : Exception){
-            throw e
-        }
+        val optional : Optional<User> = repository.findById(id)
+
         if (!optional.isPresent){
             throw NotFoundException("User with id $id doesn't exist")
         }
@@ -41,13 +37,8 @@ class UserService {
     }
 
     fun findByEmail(email: String) : User{
-        val optional : Optional<User>
+        val optional : Optional<User> = repository.findByEmail(email)
 
-        try{
-            optional = repository.findByEmail(email)
-        } catch (e : Exception){
-            throw e
-        }
         if(!optional.isPresent){
             throw NotFoundException("User not found with email $email")
         }
