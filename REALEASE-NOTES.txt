@@ -1,0 +1,9 @@
+------------------------------------------------------------------
+TAG Entrega-1-v1.0
+------------------------------------------------------------------
+
+NEW FEATURES:
+* Registrar usuarios
+* Logueo de usuarios
+* Ver cotizaciones de criptomonedas
+* Desloguear usuario
