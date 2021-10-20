@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
@@ -22,6 +23,7 @@ class CryptoService {
         return response.body!!
     }
 
+    @Cacheable("cacheCrypto")
     fun allCryptos() : List<CryptoDTO>{
           var response = restTemplate.exchange("https://api1.binance.com/api/v3/ticker/price",
               HttpMethod.GET, null, object : ParameterizedTypeReference<List<CryptoDTO>>() {})
