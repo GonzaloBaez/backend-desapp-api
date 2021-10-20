@@ -57,7 +57,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         httpSecurity.addFilter(corsFilter())
         // We don't need CSRF for this example
         httpSecurity.csrf().disable() // dont authenticate this particular request
-            .authorizeRequests().antMatchers("/api/users","/register","/authenticate","/h2-console/**")
+            .authorizeRequests().antMatchers("/api/users","/register","/authenticate","/h2-console/**","/swagger-ui.html/**","/swagger-ui/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs","/webjars/**")
                 .permitAll().anyRequest().authenticated().and().exceptionHandling()
                       .authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

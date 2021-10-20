@@ -1,4 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.model
 
-class DollarQuoteDTO(var d: String, var v:Double) {
+import java.io.Serializable
+
+class DollarQuoteDTO(var d: String, var v:Double):Serializable {
 }

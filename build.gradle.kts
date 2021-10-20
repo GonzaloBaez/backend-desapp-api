@@ -55,11 +55,15 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.springframework.boot:spring-boot-starter-security:2.5.5")
+	implementation("io.springfox", "springfox-swagger2", "3.0.0")
+	implementation("io.springfox", "springfox-swagger-ui", "3.0.0")
+	implementation("io.springfox", "springfox-boot-starter", "3.0.0")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.junit.vintage:junit-vintage-engine:5.8.0")
 	implementation("log4j:log4j:1.2.17")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis:2.5.5")
 
 }
 
