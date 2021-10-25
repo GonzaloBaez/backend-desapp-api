@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class CryptoDTO(var symbol : String, var price : Double, var date: String = LocalDate.now().format(
-    DateTimeFormatter.ofPattern("dd/MM/yy")), var hour:String = LocalDateTime.now().toLocalTime().format(
+    DateTimeFormatter.ofPattern("dd/MM/yyyy")), var hour:String = LocalDateTime.now().toLocalTime().format(
     DateTimeFormatter.ofPattern("HH:mm"))): Serializable {
 
 }
