@@ -3,12 +3,14 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.DuplicateUniqueException
+import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.After
 import org.junit.Before
 import org.mockito.InjectMocks
@@ -26,6 +28,9 @@ class UserServiceTests {
 
 	@Mock
 	lateinit var userRepository: UserRepository
+
+	@Mock
+	lateinit var transaciton : Transaction
 
 	@InjectMocks
 	lateinit var userService : UserService
@@ -63,14 +68,24 @@ class UserServiceTests {
 
 	@Test
 	fun `gettingShouldFailIfIdDoesn'tExist`(){
-		assertThatThrownBy { userService.findById(100) }.isInstanceOf(NotFoundException::class.java)
-			.withFailMessage("User with id 100 doesn't exist")
+		Mockito.`when`(userRepository.findById(100)).thenReturn(Optional.empty())
+
+		var error = assertThrows(NotFoundException::class.java){
+			userService.findById(100)
+		}
+
+		assertEquals("User with id 100 doesn't exist",error.message)
 	}
 
 	@Test
 	fun `gettingShouldFailIfEmailDoesn'tExist`(){
-		assertThatThrownBy { userService.findByEmail("100@gmail.com") }.isInstanceOf(NotFoundException::class.java)
-			.withFailMessage("User with email 100@gmail.com doesn't exist")
+		Mockito.`when`(userRepository.findByEmail("100@gmail.com")).thenReturn(Optional.empty())
+
+		var error = assertThrows(NotFoundException::class.java){
+			userService.findByEmail("100@gmail.com")
+		}
+
+		assertEquals("User with email 100@gmail.com doesn't exist",error.message)
 	}
 
 	@Test
@@ -82,7 +97,11 @@ class UserServiceTests {
 		userService.save(userOne)
 		Mockito.`when`(userRepository.save(userTwo)).thenThrow(DataIntegrityViolationException::class.java)
 
-		assertThatThrownBy { userService.save(userTwo) }.isInstanceOf(DataIntegrityViolationException::class.java)
+		var error = assertThrows(DuplicateUniqueException::class.java){
+			userService.save(userTwo)
+		}
+
+		assertEquals("Wallet ${userOne.wallet} or Email ${userOne.email} already exist",error.message)
 	}
 
 	@Test
@@ -94,7 +113,12 @@ class UserServiceTests {
 		userService.save(userOne)
 		Mockito.`when`(userRepository.save(userTwo)).thenThrow(DataIntegrityViolationException::class.java)
 
-		assertThatThrownBy { userService.save(userTwo) }.isInstanceOf(DataIntegrityViolationException::class.java)
+		var error = assertThrows(DuplicateUniqueException::class.java) {
+			userService.save(userTwo)
+		}
+
+		assertEquals("Wallet ${userOne.wallet} or Email ${userOne.email} already exist",error.message)
+
 	}
 
 	@Test
@@ -111,6 +135,18 @@ class UserServiceTests {
 
 		assertEquals(allSavedUsers.size,2)
 		assertEquals(listOfUser,allSavedUsers)
+	}
+
+	@Test
+	fun addTransactionsToUser(){
+		var userOne = userBuilder.build()
+
+		Mockito.`when`(userRepository.save(userOne)).thenReturn(userOne)
+
+		var userWhoAddATransaction = userService.addTransactionTo(userOne,transaciton)
+
+		assertEquals(userWhoAddATransaction.transactions.size,1)
+		assertEquals(userWhoAddATransaction.operations,1)
 	}
 
 	@After
