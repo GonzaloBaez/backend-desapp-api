@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
+import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +18,13 @@ class UserService {
     @Transactional
     fun save(user: User): User{
         return repository!!.save(user)
+    }
+
+    @Transactional
+    fun addTransactionTo(user:User,transaction: Transaction) : User{
+        user.addTransaction(transaction)
+        transaction.user = user
+        return repository.save(user)
     }
 
     fun findById(id:Long):User{
