@@ -1,10 +1,12 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.TransactionBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -40,6 +42,16 @@ class TransactionServiceTest {
         var gettingTransaction = transactionService.findById(transactionSaved.id)
 
         assertEquals(transactionSaved,gettingTransaction)
+    }
+
+    @Test
+    fun `gettingShouldFailIfTransactionIdDoesn'tExist`(){
+        Mockito.`when`(transactionRepository.findById(100)).thenReturn(Optional.empty())
+        var error = assertThrows(NotFoundException::class.java) {
+            transactionService.findById(100)
+        }
+
+        assertEquals("Transaction with id 100 doesn't exist",error.message)
     }
 
     @Test
