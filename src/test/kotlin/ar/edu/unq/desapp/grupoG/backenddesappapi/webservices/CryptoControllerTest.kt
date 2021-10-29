@@ -2,7 +2,7 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.CryptoBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -30,8 +30,8 @@ class CryptoControllerTest {
 
         val obtainedCrypto = cryptoController.quote("BNDUSDT")
 
-        assertThat(obtainedCrypto.body == cryptoBND)
-        assertThat(obtainedCrypto.statusCode == HttpStatus.OK)
+        assertEquals(obtainedCrypto.body,cryptoBND)
+        assertEquals(obtainedCrypto.statusCode,HttpStatus.OK)
 
     }
 
@@ -46,6 +46,6 @@ class CryptoControllerTest {
 
         val allCryptos = cryptoController.allCryptos()
 
-        assertThat(createdCryptos == allCryptos)
+        assertEquals(createdCryptos,allCryptos.body)
     }
 }

@@ -1,9 +1,8 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi
+package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.CryptoBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
-import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,7 +41,7 @@ class CryptoServiceTest {
 
         var crypto2 = cryptoService.quote(crypto.symbol)
 
-        assertThat(crypto == crypto2)
+        assertEquals(crypto,crypto2)
 
     }
 
@@ -59,6 +58,6 @@ class CryptoServiceTest {
 
         var allCryptos2 = cryptoService.allCryptos()
 
-        assertThat(allCryptos == allCryptos2)
+        assertEquals(allCryptos,allCryptos2)
     }
 }

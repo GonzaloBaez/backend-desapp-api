@@ -1,9 +1,8 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi
+package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.DollarBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.DollarQuoteDTO
-import ar.edu.unq.desapp.grupoG.backenddesappapi.services.DollarQuoteService
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +46,7 @@ class DollarServiceTest {
             .thenReturn(ResponseEntity(allDollarQuotes,HttpStatus.OK))
         var dollarObtained = dollarService.quote()
 
-        assertThat(dollar1 == dollarObtained)
+        assertEquals(dollar1,dollarObtained)
 
     }
 

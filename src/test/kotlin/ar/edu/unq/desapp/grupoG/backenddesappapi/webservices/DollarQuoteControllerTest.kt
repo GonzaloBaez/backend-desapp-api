@@ -2,7 +2,7 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.DollarBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.DollarQuoteService
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -29,7 +29,7 @@ class DollarQuoteControllerTest {
 
         var obtainedDollar = dollarController.quote()
 
-        assertThat(obtainedDollar.body == quote)
-        assertThat(obtainedDollar.statusCode == HttpStatus.OK)
+        assertEquals(obtainedDollar.body, quote)
+        assertEquals(obtainedDollar.statusCode, HttpStatus.OK)
     }
 }

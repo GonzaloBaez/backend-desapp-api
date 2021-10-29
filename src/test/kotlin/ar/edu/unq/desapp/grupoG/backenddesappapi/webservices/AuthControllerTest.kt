@@ -2,7 +2,8 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -33,8 +34,8 @@ class AuthControllerTest {
 
         val registeredUser = authController.register(newUser)
 
-        assertThat(registeredUser.body == newUser)
-        assertThat(newUser.password != "a")
-        assertThat(registeredUser.statusCode == HttpStatus.CREATED)
+        assertEquals(registeredUser.body,newUser)
+        assertNotEquals(newUser.password,"a")
+        assertEquals(registeredUser.statusCode,HttpStatus.CREATED)
     }
 }

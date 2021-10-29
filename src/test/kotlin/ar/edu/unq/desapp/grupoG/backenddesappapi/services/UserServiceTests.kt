@@ -1,14 +1,13 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi
+package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
-import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.After
 import org.junit.Before
@@ -46,7 +45,7 @@ class UserServiceTests {
 		val userRegistered = userService.save(userToRegister)
 		var obtainedUser :User= userService.findById(userToRegister.id)
 
-		assertThat(userRegistered == obtainedUser)
+		assertEquals(userRegistered,obtainedUser)
 	}
 
 	@Test
@@ -59,7 +58,7 @@ class UserServiceTests {
 		val userRegistered = userService.save(userToRegister)
 		val savedUser = userService.findByEmail(userToRegister.email)
 
-		assertThat(userRegistered == savedUser)
+		assertEquals(userRegistered,savedUser)
 	}
 
 	@Test
@@ -110,8 +109,8 @@ class UserServiceTests {
 		var listOfUser = listOf(userService.save(userOne),userService.save(userTwo))
 		var allSavedUsers = userService.findAll().toMutableList()
 
-		assertThat(allSavedUsers.size == 2)
-		assertThat(listOfUser == allSavedUsers)
+		assertEquals(allSavedUsers.size,2)
+		assertEquals(listOfUser,allSavedUsers)
 	}
 
 	@After
