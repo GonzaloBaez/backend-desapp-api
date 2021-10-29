@@ -1,13 +1,16 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.DuplicateUniqueException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import kotlin.jvm.Throws
 
 @Service
 class UserService {
@@ -15,9 +18,14 @@ class UserService {
     @Autowired
     private lateinit var  repository: UserRepository
 
-    @Transactional
+    @Transactional(rollbackFor = [DuplicateUniqueException::class])
+    @Throws(DuplicateUniqueException::class)
     fun save(user: User): User{
-        return repository!!.save(user)
+        return try{
+            repository!!.save(user)
+        } catch (e: DataIntegrityViolationException){
+            throw DuplicateUniqueException("Wallet ${user.wallet} or Email ${user.email} already exist")
+        }
     }
 
     @Transactional
@@ -48,7 +56,7 @@ class UserService {
         val optional : Optional<User> = repository.findByEmail(email)
 
         if(!optional.isPresent){
-            throw NotFoundException("User not found with email $email")
+            throw NotFoundException("User with email $email doesn't exist")
         }
         return optional.get()
     }
