@@ -33,6 +33,8 @@ sonarqube {
 		property ("sonar.login","795ec1c68f8a2a0cb50f4cd4ce1082b3d4e6ccba")
 		property ("sonar.coverage.jacoco.xmlReportPaths", "build/jacocoXML")
 		property ("sonar.exclusions","src/main/kotlin/ar/edu/unq/desapp/grupoG/backenddesappapi/securityConfig/*")
+		property ("sonar.exclusions","src/main/kotlin/ar/edu/unq/desapp/grupoG/backenddesappapi/cache/*")
+		property ("sonar.exclusions","src/main/kotlin/ar/edu/unq/desapp/grupoG/backenddesappapi/swagger/*")
 	}
 }
 jacoco {
