@@ -1,8 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.TransactionDTO
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.TransactionService
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.springframework.beans.factory.annotation.Autowired

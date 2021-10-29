@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.Cache
 import org.springframework.cache.interceptor.CacheErrorHandler
 import org.springframework.data.redis.RedisConnectionFailureException
-import java.net.ConnectException
 import kotlin.RuntimeException
 
 
