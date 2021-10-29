@@ -40,4 +40,25 @@ class UserModelTest {
         assertEquals(newUser.transactions.size,1)
         assertTrue(newUser.transactions.contains(transaction))
     }
+
+    @Test
+    fun whenUserHasZeroOperationsHeHasNoReputationOnDTO(){
+        var newUser = userBuilder.build()
+        var userDTO = newUser.toDTO()
+
+        assertEquals(userDTO.operations,0)
+        assertEquals(userDTO.reputation,"Sin operaciones")
+    }
+
+    @Test
+    fun whenUserHasOperationsHeHasSomeReputationOnDTO(){
+        var newUser = userBuilder.withPoints(10).build()
+
+        newUser.addTransaction(transaction)
+        newUser.addTransaction(transaction)
+        var userDTO = newUser.toDTO()
+
+        assertEquals(userDTO.operations,2)
+        assertEquals(userDTO.reputation,"5")
+    }
 }
