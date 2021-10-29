@@ -9,13 +9,11 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @EnableAutoConfiguration
+@RequestMapping("/api/users")
 @CrossOrigin
 class AuthController {
     @Autowired
@@ -29,10 +27,10 @@ class AuthController {
     fun register(@RequestBody user: User): ResponseEntity<Any> {
         return try {
             user.password = passwordEncoder.encode(user.password)
-            userService.save(user)
+            var savedUser = userService.save(user)
             val responseHeader = HttpHeaders()
             responseHeader.set("location","/api/users" + "/" + user.id)
-            ResponseEntity(responseHeader, HttpStatus.CREATED)
+            ResponseEntity(savedUser, HttpStatus.CREATED)
         }catch (e: DataIntegrityViolationException){
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }
