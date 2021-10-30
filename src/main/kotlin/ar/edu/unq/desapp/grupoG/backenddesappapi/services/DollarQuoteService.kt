@@ -20,11 +20,21 @@ class DollarQuoteService {
 
     @Cacheable("cacheDollar")
     fun quote(): DollarQuoteDTO {
-        var headers = HttpHeaders()
+        /*var headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         headers.set("Authorization", "Bearer $key")
         var entity = HttpEntity("parameters",headers)
         var response = restTemplate.exchange("https://api.estadisticasbcra.com/usd",HttpMethod.GET,entity,object : ParameterizedTypeReference<List<DollarQuoteDTO>>() {})
-        return response.body!!.last()
+        return response.body!!.last()*/
+        var response = restTemplate.exchange("https://apis.datos.gob.ar/series/api/series/?ids=168.1_T_CAMBIOR_D_0_0_26&start_date=2021-07&limit=5000",HttpMethod.GET,null,
+            object:ParameterizedTypeReference<Any>(){})
+
+        var responseMap = response.body as HashMap<Any,Any>
+
+        var listReponse = responseMap["data"] as ArrayList<Any>
+
+        var objectReponse = listReponse.last() as List<Any>
+
+        return DollarQuoteDTO(objectReponse[0] as String,objectReponse[1] as Double)
     }
 }
