@@ -45,9 +45,10 @@ class TransactionController {
         return transactionService.findByState("Creada").map { it.toDTO() }
     }
 
-    @PutMapping("/activity-{id}/update")
-    fun updateActivityToInProgress(@PathVariable("id") id:Long):ResponseEntity<Any>{
+    @PutMapping("/activity-{id}-{counterPartUser}/update")
+    fun updateActivityToInProgress(@PathVariable("id") id:Long, @PathVariable("counterPartUser") counterPartUser:String):ResponseEntity<Any>{
         transactionService.updateActivityToInProgress(id)
+        transactionService.setCounterPartUser(id,counterPartUser)
         return ResponseEntity(HttpStatus.OK)
     }
 }

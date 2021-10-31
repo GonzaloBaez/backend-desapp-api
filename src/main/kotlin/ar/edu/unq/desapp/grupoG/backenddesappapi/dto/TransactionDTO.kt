@@ -18,10 +18,11 @@ data class TransactionDTO(
     var cvu : String? = null,
     var wallet : String? = null,
     var state:String,
-    var reputation:String
+    var reputation:String,
+    var counterPartUser: String? = null
 ) {
 
     fun toModel(user: User) : Transaction{
-        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount,type,state)
+        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount,type,state,counterPartUser)
     }
 }

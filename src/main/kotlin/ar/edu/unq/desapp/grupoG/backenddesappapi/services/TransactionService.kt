@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
-import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
@@ -34,5 +33,12 @@ class TransactionService {
     @Transactional
     fun updateActivityToInProgress(id:Long){
         transactionRepository.updateActivityToInProgress(id)
+    }
+
+    @Transactional
+    fun setCounterPartUser(id: Long,counterPartUser: String){
+        var transaction = transactionRepository.findById(id).get()
+        transaction.counterPartUser = counterPartUser
+        transactionRepository.save(transaction)
     }
 }
