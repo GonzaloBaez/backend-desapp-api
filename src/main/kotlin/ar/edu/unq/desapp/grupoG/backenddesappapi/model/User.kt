@@ -28,12 +28,11 @@ data class User(@Column(length = 30) var name : String, @Column(length = 30) var
         this.transactions.add(tr)
         newOperation()
     }
-
+    fun reputation():String{
+        return if(operations == 0) "Sin operaciones" else (this.points / this.operations).toString()
+    }
     fun toDTO() : UserDTO {
-        lateinit var reputation : String
-        reputation = if(operations == 0) "Sin operaciones" else (this.points / this.operations).toString()
-
-        return UserDTO(name,surname,email,address,cvu,wallet,points,operations,reputation)
+        return UserDTO(name,surname,email,address,cvu,wallet,points,operations,this.reputation())
     }
 
 

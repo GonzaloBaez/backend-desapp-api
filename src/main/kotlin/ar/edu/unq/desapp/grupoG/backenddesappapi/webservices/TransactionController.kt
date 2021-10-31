@@ -17,26 +17,37 @@ import org.springframework.web.bind.annotation.*
 class TransactionController {
 
     @Autowired
-    lateinit var transactionService : TransactionService
+    lateinit var transactionService: TransactionService
 
     @Autowired
     lateinit var userService: UserService
 
     @PostMapping("/create")
-    fun create(@RequestBody transactionDTO : TransactionDTO): ResponseEntity<Any>{
+    fun create(@RequestBody transactionDTO: TransactionDTO): ResponseEntity<Any> {
         var user = userService.findByEmail(transactionDTO.user)
         var transaction = transactionDTO.toModel(user)
 
         var savedTransaction = transactionService.save(transaction)
-        userService.addTransactionTo(user,transaction)
+        userService.addTransactionTo(user, transaction)
 
         val responseHeader = HttpHeaders()
-        responseHeader.set("location","/api/transaction" + "/" + transaction.id)
+        responseHeader.set("location", "/api/transaction" + "/" + transaction.id)
         return ResponseEntity(savedTransaction.toDTO(), HttpStatus.CREATED)
     }
 
     @GetMapping
-    fun allTransactions() : List<TransactionDTO>{
+    fun allTransactions(): List<TransactionDTO> {
         return transactionService.findAll().map { it.toDTO() }
+    }
+
+    @GetMapping("/activities")
+    fun allActivities(): List<TransactionDTO> {
+        return transactionService.findByState("Creada").map { it.toDTO() }
+    }
+
+    @PutMapping("/activity-{id}/update")
+    fun updateActivityToInProgress(@PathVariable("id") id:Long):ResponseEntity<Any>{
+        transactionService.updateActivityToInProgress(id)
+        return ResponseEntity(HttpStatus.OK)
     }
 }

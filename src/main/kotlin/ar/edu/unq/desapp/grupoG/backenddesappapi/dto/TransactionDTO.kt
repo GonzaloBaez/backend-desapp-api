@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class TransactionDTO(
+    val id:Long,
     var user : String,
     val hour : String = LocalDateTime.now().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")),
     val cryptoName : String,
@@ -15,10 +16,12 @@ data class TransactionDTO(
     var amount : Double,
     var type : String,
     var cvu : String? = null,
-    var wallet : String? = null
+    var wallet : String? = null,
+    var state:String,
+    var reputation:String
 ) {
 
     fun toModel(user: User) : Transaction{
-        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount,type)
+        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount,type,state)
     }
 }
