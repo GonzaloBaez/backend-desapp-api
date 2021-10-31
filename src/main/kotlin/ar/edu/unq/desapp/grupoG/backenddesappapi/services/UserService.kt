@@ -60,4 +60,11 @@ class UserService {
         }
         return optional.get()
     }
+
+    @Transactional
+    fun discountToCancelingUser(cancelingUserEmail: String) {
+        var cancelingUser = findByEmail(cancelingUserEmail)
+        cancelingUser.discountPoints()
+        repository.save(cancelingUser)
+    }
 }

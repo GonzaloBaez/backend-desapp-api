@@ -35,5 +35,9 @@ data class User(@Column(length = 30) var name : String, @Column(length = 30) var
         return UserDTO(name,surname,email,address,cvu,wallet,points,operations,this.reputation())
     }
 
+    fun discountPoints(){
+        this.points-=20
+    }
+
 
 }

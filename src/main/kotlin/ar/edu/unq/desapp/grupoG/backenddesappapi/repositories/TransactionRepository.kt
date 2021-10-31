@@ -17,4 +17,8 @@ interface TransactionRepository : JpaRepository<Transaction,Long> {
     @Modifying
     @Query("UPDATE transaction t SET state = 'En progreso' WHERE t.id = ?1 ",nativeQuery = true)
     fun updateActivityToInProgress(id:Long)
+
+    @Modifying
+    @Query("UPDATE transaction t SET state = 'Creada',counter_Part_User = null WHERE t.id = ?1 ", nativeQuery = true)
+    fun cancelActivity(id: Long)
 }
