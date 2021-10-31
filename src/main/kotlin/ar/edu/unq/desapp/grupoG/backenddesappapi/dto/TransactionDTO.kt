@@ -12,10 +12,13 @@ data class TransactionDTO(
     var unitValue : Double,
     var quote : Double,
     var totalPrice : Double,
-    var amount : Double
+    var amount : Double,
+    var type : String,
+    var cvu : String? = null,
+    var wallet : String? = null
 ) {
 
     fun toModel(user: User) : Transaction{
-        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount)
+        return Transaction(user,hour,cryptoName,unitValue,quote,totalPrice,amount,type)
     }
 }

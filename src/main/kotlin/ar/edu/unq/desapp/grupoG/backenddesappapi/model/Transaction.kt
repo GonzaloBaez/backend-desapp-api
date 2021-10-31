@@ -9,14 +9,14 @@ import javax.persistence.*
 class Transaction(@ManyToOne(fetch = FetchType.LAZY)
                   @JoinColumn(name = "user_id") var user: User,
                   @Column val hour : String = LocalDateTime.now().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                  @Column val cryptoName : String, @Column var unitValue : Double, @Column var quote : Double,
-                  @Column var totalPrice : Double, @Column var amount : Double ) {
+                  @Column val cryptoName : String, @Column val unitValue : Double, @Column val quote : Double,
+                  @Column val totalPrice : Double, @Column val amount : Double, @Column val type : String ) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id : Long = 0
 
     fun toDTO() : TransactionDTO{
-        return TransactionDTO(user.email,hour,cryptoName,unitValue,quote,totalPrice,amount)
+        return TransactionDTO(user.email,hour,cryptoName,unitValue,quote,totalPrice,amount,type,user.cvu,user.wallet)
     }
 }
