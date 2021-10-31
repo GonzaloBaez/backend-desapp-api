@@ -12,4 +12,9 @@ class DollarBuilder(
         this.d = d
         return this
     }
+
+    fun withV(v:Double):DollarBuilder{
+        this.v = v
+        return this
+    }
 }
