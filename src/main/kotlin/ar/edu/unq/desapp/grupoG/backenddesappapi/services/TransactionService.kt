@@ -29,7 +29,14 @@ class TransactionService {
 
         return optional.get()
     }
-
+    fun findByUser(user:User): List<Transaction> {
+        val optional:Optional<List<Transaction>> = transactionRepository.findByUserContaining(user.id)
+        return optional.get()
+    }
+    fun findByCounterPartUser(userEmail:String): List<Transaction> {
+        val optional:Optional<List<Transaction>> = transactionRepository.findByCounterPartUserContaining(userEmail)
+        return optional.get()
+    }
     @Transactional
     fun updateActivityToInProgress(id:Long){
         transactionRepository.updateActivityToInProgress(id)

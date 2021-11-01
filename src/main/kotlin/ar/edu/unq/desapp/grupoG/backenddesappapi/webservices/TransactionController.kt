@@ -51,4 +51,15 @@ class TransactionController {
         transactionService.setCounterPartUser(id,counterPartUser)
         return ResponseEntity(HttpStatus.OK)
     }
+
+    @GetMapping("/activities/{userEmail}")
+    fun activitiesFromUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
+        var user = userService.findByEmail(userEmail)
+        return transactionService.findByUser(user).map { it.toDTO() }
+    }
+    @GetMapping("/pending-activities/{userEmail}")
+    fun activitiesFromCounterPartUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
+        return transactionService.findByCounterPartUser(userEmail).map { it.toDTO() }
+    }
 }
+
