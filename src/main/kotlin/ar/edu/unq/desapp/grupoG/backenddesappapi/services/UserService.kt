@@ -29,6 +29,14 @@ class UserService {
     }
 
     @Transactional
+    fun getActivitiesFromUser(user:String) : MutableList<Transaction>{
+        var savedUser = repository.findByEmail(user).get()
+        var activities = savedUser.transactions
+
+        return activities
+    }
+
+    @Transactional
     fun addTransactionTo(user:User,transaction: Transaction) : User{
         user.addTransaction(transaction)
         transaction.user = user

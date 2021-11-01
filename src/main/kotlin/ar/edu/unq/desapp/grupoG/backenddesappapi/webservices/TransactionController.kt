@@ -58,4 +58,11 @@ class TransactionController {
         userService.discountToCancelingUser(cancelingUser)
         return ResponseEntity(HttpStatus.OK)
     }
+
+    @GetMapping("/activities/{user}")
+    fun getActivitiesByUser(@PathVariable("user") user:String): ResponseEntity<Any>{
+        var activities = userService.getActivitiesFromUser(user)
+        var activitiesDTO = activities.map { it.toDTO() }
+        return ResponseEntity(activitiesDTO,HttpStatus.OK)
+    }
 }
