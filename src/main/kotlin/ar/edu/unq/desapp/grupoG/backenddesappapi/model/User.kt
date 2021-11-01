@@ -39,5 +39,9 @@ data class User(@Column(length = 30) var name : String, @Column(length = 30) var
         this.points-=20
     }
 
+    fun sumPoints(points:Int){
+        this.points+= points
+    }
+
 
 }

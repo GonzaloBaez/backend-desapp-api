@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.DuplicateUniqueException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
@@ -25,6 +26,21 @@ class UserService {
             repository!!.save(user)
         } catch (e: DataIntegrityViolationException){
             throw DuplicateUniqueException("Wallet ${user.wallet} or Email ${user.email} already exist")
+        }
+    }
+
+    @Transactional
+    @Throws(BadRequest::class)
+    fun closeActivity(transaction: Transaction,counterPartUserEmail:String){
+        if(counterPartUserEmail == transaction.counterPartUser) {
+            var counterPartUser : User = repository.findByEmail(counterPartUserEmail).get()
+            transaction.state = "Cerrada"
+            var points = transaction.getPointsForUsers()
+            transaction.user.sumPoints(points)
+            counterPartUser.sumPoints(points)
+            repository.saveAll(listOf(transaction.user,counterPartUser))
+        }else{
+            throw BadRequest("Invalid information to close transaction")
         }
     }
 

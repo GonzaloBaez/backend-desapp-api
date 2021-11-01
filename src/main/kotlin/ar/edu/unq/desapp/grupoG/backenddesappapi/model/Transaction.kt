@@ -4,6 +4,7 @@ import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.TransactionDTO
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.persistence.*
+import kotlin.math.absoluteValue
 
 @Entity
 class Transaction(@ManyToOne(fetch = FetchType.LAZY)
@@ -19,5 +20,15 @@ class Transaction(@ManyToOne(fetch = FetchType.LAZY)
 
     fun toDTO() : TransactionDTO{
         return TransactionDTO(id,user.email,hour,cryptoName,unitValue,quote,totalPrice,amount,type,user.cvu,user.wallet,state,user.reputation(),counterPartUser)
+    }
+
+    fun getPointsForUsers() : Int{
+        var actualHour = LocalDateTime.now().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")).filter { it != ':' }
+        var hourOfCreation = hour.filter { it != ':' }
+
+        var differencesBetweenHours = actualHour.toInt() - hourOfCreation.toInt()
+        if(differencesBetweenHours.absoluteValue>30)
+            return 5
+        return 10
     }
 }

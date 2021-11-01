@@ -64,6 +64,13 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @PutMapping("/close/{id}/{counterPartUserEmail}")
+    fun closeActivity(@PathVariable("id") id:Long, @PathVariable("counterPartUserEmail") counterPartUserEmail: String):ResponseEntity<Any>{
+        var transaction = transactionService.findById(id)
+        userService.closeActivity(transaction,counterPartUserEmail)
+        return ResponseEntity(HttpStatus.OK)
+    }
+
     @GetMapping("/activities/{userEmail}")
     fun getActivitiesByUser(@PathVariable("userEmail") userEmail:String): ResponseEntity<Any>{
         var activities = userService.getActivitiesFromUser(userEmail)
