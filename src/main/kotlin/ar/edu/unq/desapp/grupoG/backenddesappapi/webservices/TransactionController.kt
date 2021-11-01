@@ -61,5 +61,11 @@ class TransactionController {
     fun activitiesFromCounterPartUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
         return transactionService.findByCounterPartUser(userEmail).map { it.toDTO() }
     }
-}
 
+    @PutMapping("/activity-{id}-{cancelingUser}/delete")
+    fun cancelActivity(@PathVariable("id") id:Long, @PathVariable("cancelingUser") cancelingUser:String): ResponseEntity<Any>{
+        transactionService.cancelActivity(id)
+        userService.discountToCancelingUser(cancelingUser)
+        return ResponseEntity(HttpStatus.OK)
+    }
+}

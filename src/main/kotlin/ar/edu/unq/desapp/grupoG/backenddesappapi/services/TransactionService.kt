@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
@@ -29,10 +30,11 @@ class TransactionService {
 
         return optional.get()
     }
-    fun findByUser(user:User): List<Transaction> {
+    fun findByUser(user: User): List<Transaction> {
         val optional:Optional<List<Transaction>> = transactionRepository.findByUserContaining(user.id)
         return optional.get()
     }
+
     fun findByCounterPartUser(userEmail:String): List<Transaction> {
         val optional:Optional<List<Transaction>> = transactionRepository.findByCounterPartUserContaining(userEmail)
         return optional.get()
@@ -47,5 +49,19 @@ class TransactionService {
         var transaction = transactionRepository.findById(id).get()
         transaction.counterPartUser = counterPartUser
         transactionRepository.save(transaction)
+    }
+
+    @Transactional
+    fun cancelActivity(id: Long) {
+        transactionRepository.cancelActivity(id)
+    }
+
+    fun findById(id:Long) : Transaction{
+        val optional : Optional<Transaction> = transactionRepository.findById(id)
+
+        if(!optional.isPresent){
+            throw NotFoundException("Transaction with id $id doesn't exist")
+        }
+        return optional.get()
     }
 }

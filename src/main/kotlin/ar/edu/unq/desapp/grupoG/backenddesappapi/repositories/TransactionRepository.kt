@@ -25,4 +25,8 @@ interface TransactionRepository : JpaRepository<Transaction,Long> {
 
     @Query("SELECT * from transaction t where t.counter_part_user = ?1",nativeQuery = true)
     fun findByCounterPartUserContaining(counterPartUser:String):Optional<List<Transaction>>
+
+    @Modifying
+    @Query("UPDATE transaction t SET state = 'Creada',counter_Part_User = null WHERE t.id = ?1 ", nativeQuery = true)
+    fun cancelActivity(id: Long)
 }
