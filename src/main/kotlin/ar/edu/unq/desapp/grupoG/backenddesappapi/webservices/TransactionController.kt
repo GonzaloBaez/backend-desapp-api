@@ -52,11 +52,6 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @GetMapping("/activities/{userEmail}")
-    fun activitiesFromUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
-        var user = userService.findByEmail(userEmail)
-        return transactionService.findByUser(user).map { it.toDTO() }
-    }
     @GetMapping("/pending-activities/{userEmail}")
     fun activitiesFromCounterPartUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
         return transactionService.findByCounterPartUser(userEmail).map { it.toDTO() }
@@ -67,5 +62,12 @@ class TransactionController {
         transactionService.cancelActivity(id)
         userService.discountToCancelingUser(cancelingUser)
         return ResponseEntity(HttpStatus.OK)
+    }
+
+    @GetMapping("/activities/{userEmail}")
+    fun getActivitiesByUser(@PathVariable("userEmail") userEmail:String): ResponseEntity<Any>{
+        var activities = userService.getActivitiesFromUser(userEmail)
+        var activitiesDTO = activities.map { it.toDTO() }
+        return ResponseEntity(activitiesDTO,HttpStatus.OK)
     }
 }

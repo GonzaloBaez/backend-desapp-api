@@ -20,9 +20,6 @@ interface TransactionRepository : JpaRepository<Transaction,Long> {
     @Query("UPDATE transaction t SET state = 'En progreso' WHERE t.id = ?1 ",nativeQuery = true)
     fun updateActivityToInProgress(id:Long)
 
-    @Query(" SELECT * From transaction t where t.user_id = ?1",nativeQuery = true)
-    fun findByUserContaining(userId:Long): Optional<List<Transaction>>
-
     @Query("SELECT * from transaction t where t.counter_part_user = ?1",nativeQuery = true)
     fun findByCounterPartUserContaining(counterPartUser:String):Optional<List<Transaction>>
 
