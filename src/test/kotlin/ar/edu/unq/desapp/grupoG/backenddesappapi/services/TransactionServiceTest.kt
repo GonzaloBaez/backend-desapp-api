@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.TransactionBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
 import org.junit.Before
@@ -104,6 +105,18 @@ class TransactionServiceTest {
 
         Mockito.verify(transactionRepository,times(1)).save(transaction)
         assertEquals(transaction.counterPartUser,"z2@gmail.com")
+    }
+
+    @Test
+    fun findByUserContaining(){
+        var transaction = transactionBuilder.build()
+        var userOne = UserBuilder().withEmail("saraza").build()
+        transaction.counterPartUser = userOne.email
+
+        Mockito.`when`(transactionRepository.findByCounterPartUserContaining("saraza"))
+            .thenReturn(Optional.of(listOf(transaction)))
+
+        assertEquals(listOf(transaction),transactionService.findByCounterPartUser(userOne.email))
     }
 
     @Test
