@@ -7,13 +7,14 @@ import ar.edu.unq.desapp.grupoG.backenddesappapi.services.TransactionService
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.boot.test.context.SpringBootTest
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.mockito.Mockito
+import org.mockito.Mockito.times
 import org.springframework.http.HttpStatus
 
 
@@ -22,6 +23,8 @@ import org.springframework.http.HttpStatus
 class TransactionControllerTest {
 
     lateinit var transactionBuilder : TransactionBuilder
+
+    lateinit var userBuilder: UserBuilder
 
     @Mock
     lateinit var transactionService: TransactionService
@@ -32,15 +35,13 @@ class TransactionControllerTest {
     @Mock
     lateinit var transactionDTO : TransactionDTO
 
-    @Mock
-    lateinit var transactionDTOTwo : TransactionDTO
-
     @InjectMocks
     lateinit var transactionController: TransactionController
 
     @Before
     fun setUp(){
         transactionBuilder = TransactionBuilder()
+        userBuilder = UserBuilder()
     }
 
     @Test
@@ -50,14 +51,16 @@ class TransactionControllerTest {
         Mockito.`when`(transactionDTO.user).thenReturn(transaction.user.email)
         Mockito.`when`(transactionDTO.toModel(transaction.user)).thenReturn(transaction)
         Mockito.`when`(userService.findByEmail(transactionDTO.user)).thenReturn(transaction.user)
-        Mockito.`when`(transactionService.save(transaction)).thenReturn(transaction)
         Mockito.`when`(transactionService.findAll()).thenReturn(mutableListOf(transaction))
+        Mockito.`when`(userService.addTransactionTo(transaction.user,transaction)).then {
+            transaction.user.addTransaction(transaction)
+            transaction.user}
 
         var savedTransactionDTO = transactionController.create(transactionDTO)
         var gettingTransactionDTO = transactionController.allTransactions()
 
         assertEquals(savedTransactionDTO.body, gettingTransactionDTO[0])
-        assertEquals(savedTransactionDTO.statusCode,HttpStatus.CREATED)
+        assertEquals(HttpStatus.CREATED,savedTransactionDTO.statusCode)
     }
 
     @Test
@@ -65,23 +68,85 @@ class TransactionControllerTest {
         var transactionOne = transactionBuilder.build()
         var transactionTwo = transactionBuilder.withUser(UserBuilder().withEmail("z2@gmail.com").build()).build()
 
-        Mockito.`when`(transactionDTO.user).thenReturn(transactionOne.user.email)
-        Mockito.`when`(transactionDTOTwo.user).thenReturn(transactionTwo.user.email)
-        Mockito.`when`(userService.findByEmail(transactionDTO.user)).thenReturn(transactionOne.user)
-        Mockito.`when`(userService.findByEmail(transactionDTOTwo.user)).thenReturn(transactionTwo.user)
-        Mockito.`when`(transactionDTO.toModel(transactionOne.user)).thenReturn(transactionOne)
-        Mockito.`when`(transactionDTOTwo.toModel(transactionTwo.user)).thenReturn(transactionTwo)
-        Mockito.`when`(transactionService.save(transactionOne)).thenReturn(transactionOne)
-        Mockito.`when`(transactionService.save(transactionTwo)).thenReturn(transactionTwo)
         Mockito.`when`(transactionService.findAll()).thenReturn(mutableListOf(transactionOne,transactionTwo))
 
-        var createdTrOne = transactionController.create(transactionDTO).body
-        var createdTrTwo = transactionController.create(transactionDTOTwo).body
+        var expectedTransactions = mutableListOf(transactionOne.toDTO(),transactionTwo.toDTO())
+        var allTransactions = transactionController.allTransactions()
 
-        var allTransactions = mutableListOf(createdTrOne,createdTrTwo)
-        var gettingAllTrs = transactionController.allTransactions()
+        assertEquals(expectedTransactions,allTransactions)
+    }
 
-        assertEquals(allTransactions,gettingAllTrs)
+    @Test
+    fun gettingCreatedActivities(){
+        var transactionOne = transactionBuilder.withUser(userBuilder.withEmail("z4@gmail.com").build()).build()
+        var transactionTwo = transactionBuilder.withUser(userBuilder.withEmail("z3@gmail.com").withWallet("34434567").build()).build()
+
+        Mockito.`when`(transactionService.findByState("Creada")).thenReturn(mutableListOf(transactionOne,transactionTwo))
+
+        var allActivities = transactionController.allActivities()
+        var expectedActivities = mutableListOf(transactionOne.toDTO(),transactionTwo.toDTO())
+
+        assertEquals(expectedActivities,allActivities)
+    }
+
+    @Test
+    fun updateATransactionToInProgressState(){
+        var transaction = transactionBuilder.build()
+
+        transactionController.updateActivityToInProgress(transaction.id,"z2@gmail.com")
+
+        Mockito.verify(transactionService, times(1)).updateActivityToInProgress(transaction.id)
+        Mockito.verify(transactionService,times(1)).setCounterPartUser(transaction.id,"z2@gmail.com")
+    }
+
+    @Test
+    fun getActivitiesFromCounterPartUser(){
+        var userOne = userBuilder.withEmail("z1@gmail.com").build()
+        var transactionOne = transactionBuilder.withUser(userOne).build()
+        var transactionTwo = transactionBuilder.withUser(userOne).build()
+        var userCounterPart = userBuilder.withEmail("z2@gmail.com").build()
+
+        Mockito.`when`(transactionService.findByCounterPartUser("z2@gmail.com")).thenReturn(mutableListOf(transactionOne,transactionTwo))
+
+        var transactions = transactionController.activitiesFromCounterPartUser(userCounterPart.email)
+        var expectedTransactions = mutableListOf(transactionOne.toDTO(),transactionTwo.toDTO())
+
+        assertEquals(expectedTransactions,transactions)
+    }
+
+    @Test
+    fun cancelActivity(){
+        var transaction = transactionBuilder.build()
+
+        transactionController.cancelActivity(transaction.id,"z@gmail.com")
+
+        Mockito.verify(transactionService, times(1)).cancelActivity(transaction.id)
+        Mockito.verify(userService, times(1)).discountToCancelingUser("z@gmail.com")
+    }
+
+    @Test
+    fun closeActivity(){
+        var transaction = transactionBuilder.build()
+
+        Mockito.`when`(transactionService.findById(transaction.id)).thenReturn(transaction)
+        transactionController.closeActivity(transaction.id,"z2@gmail.com")
+
+        Mockito.verify(userService, times(1)).closeActivity(transaction,"z2@gmail.com")
+    }
+
+    @Test
+    fun getActivitiesFromUser(){
+        var userOne = userBuilder.build()
+        var transactionOne = transactionBuilder.withUser(userOne).build()
+        var transcationTwo = transactionBuilder.withUser(userOne).build()
+
+        Mockito.`when`(userService.getActivitiesFromUser(userOne.email)).thenReturn(mutableListOf(transactionOne,transcationTwo))
+
+        var response = transactionController.getActivitiesByUser(userOne.email)
+        var expectedTransactions = mutableListOf(transactionOne.toDTO(),transcationTwo.toDTO())
+
+        assertEquals(HttpStatus.OK,response.statusCode)
+        assertEquals(expectedTransactions,response.body)
     }
 
 
