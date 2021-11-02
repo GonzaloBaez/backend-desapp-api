@@ -3,6 +3,7 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.DuplicateUniqueException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.times
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.dao.DataIntegrityViolationException
 import java.util.*
@@ -174,6 +176,45 @@ class UserServiceTests {
 
 		assertEquals(1,user.transactions.size)
 		assertEquals(activitiesFromUser,user.transactions)
+	}
+
+	@Test
+	fun closeActivityFromUserCorrectly(){
+		var user = userBuilder.build()
+		var otherUser = userBuilder.withEmail("saraza").build()
+		user.addTransaction(transaction)
+		var olderPointsUser = user.points
+		var olderPointsOtherUser = otherUser.points
+
+		Mockito.`when`(transaction.counterPartUser).thenReturn("saraza")
+		Mockito.`when`(userRepository.findByEmail("saraza")).thenReturn(Optional.of(otherUser))
+		Mockito.`when`(transaction.getPointsForUsers()).thenReturn(10)
+		Mockito.`when`(transaction.user).thenReturn(user)
+
+		userService.closeActivity(transaction,"saraza")
+
+		Mockito.verify(userRepository,times(1)).saveAll(listOf(user,otherUser))
+		assertEquals(user.points,10)
+		assertEquals(otherUser.points,10)
+		assertNotEquals(user.points,olderPointsUser)
+		assertNotEquals(otherUser.points,olderPointsOtherUser)
+	}
+
+	@Test
+	fun closeActivityFailsWithBadRequestIfCounterpartUserIsDifferentInParam(){
+		var user = userBuilder.build()
+		var otherUser = userBuilder.withEmail("saraza").build()
+		user.addTransaction(transaction)
+
+		Mockito.`when`(transaction.counterPartUser).thenReturn("otherThing")
+
+		var error = assertThrows(BadRequest::class.java){
+			userService.closeActivity(transaction,otherUser.email)
+		}
+
+		assertEquals("Invalid information to close transaction",error.message)
+		assertEquals(0,user.points)
+		assertEquals(0,otherUser.points)
 	}
 
 	@After
