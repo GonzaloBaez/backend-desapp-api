@@ -9,10 +9,9 @@ import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.UserRepository
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.After
 import org.junit.Before
+import org.junit.jupiter.api.Assertions.*
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -30,7 +29,7 @@ class UserServiceTests {
 	lateinit var userRepository: UserRepository
 
 	@Mock
-	lateinit var transaciton : Transaction
+	lateinit var transaction : Transaction
 
 	@InjectMocks
 	lateinit var userService : UserService
@@ -143,10 +142,38 @@ class UserServiceTests {
 
 		Mockito.`when`(userRepository.save(userOne)).thenReturn(userOne)
 
-		var userWhoAddATransaction = userService.addTransactionTo(userOne,transaciton)
+		var userWhoAddATransaction = userService.addTransactionTo(userOne,transaction)
 
-		assertEquals(userWhoAddATransaction.transactions.size,1)
-		assertEquals(userWhoAddATransaction.operations,1)
+		assertEquals(1,userWhoAddATransaction.transactions.size)
+		assertEquals(1,userWhoAddATransaction.operations)
+		assertTrue(userOne.transactions.contains(transaction))
+	}
+
+	@Test
+	fun discountPointsToCancelingUser(){
+		var userOne = userBuilder.withEmail("z2@gmail.com").withPoints(50).build()
+		var oldPoints = userOne.points
+
+		Mockito.`when`(userRepository.findByEmail(userOne.email)).thenReturn(Optional.of(userOne))
+
+		userService.discountToCancelingUser("z2@gmail.com")
+
+		assertEquals(userOne.points,30)
+		assertNotEquals(userOne.points,oldPoints)
+	}
+
+	@Test
+	fun getActivitiesFromUser(){
+		var user = userBuilder.withEmail("z2@gmail.com").build()
+
+		Mockito.`when`(userRepository.save(user)).thenReturn(user)
+		Mockito.`when`(userRepository.findByEmail(user.email)).thenReturn(Optional.of(user))
+		userService.addTransactionTo(user,transaction)
+
+		var activitiesFromUser = userService.getActivitiesFromUser(user.email)
+
+		assertEquals(1,user.transactions.size)
+		assertEquals(activitiesFromUser,user.transactions)
 	}
 
 	@After
