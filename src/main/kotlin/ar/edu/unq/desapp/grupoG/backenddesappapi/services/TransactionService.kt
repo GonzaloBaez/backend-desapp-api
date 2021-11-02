@@ -1,9 +1,7 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
-import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -36,6 +34,7 @@ class TransactionService {
         val optional:Optional<List<Transaction>> = transactionRepository.findByCounterPartUserContaining(userEmail)
         return optional.get()
     }
+
     @Transactional
     fun updateActivityToInProgress(id:Long){
         transactionRepository.updateActivityToInProgress(id)

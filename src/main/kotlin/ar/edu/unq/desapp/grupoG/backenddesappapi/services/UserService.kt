@@ -47,9 +47,8 @@ class UserService {
     @Transactional
     fun getActivitiesFromUser(user:String) : MutableList<Transaction>{
         var savedUser = repository.findByEmail(user).get()
-        var activities = savedUser.transactions
 
-        return activities
+        return savedUser.transactions
     }
 
     @Transactional
