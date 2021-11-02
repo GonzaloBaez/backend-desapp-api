@@ -27,12 +27,11 @@ class TransactionController {
         var user = userService.findByEmail(transactionDTO.user)
         var transaction = transactionDTO.toModel(user)
 
-        var savedTransaction = transactionService.save(transaction)
-        userService.addTransactionTo(user, transaction)
+        var savedUser = userService.addTransactionTo(user, transaction)
 
         val responseHeader = HttpHeaders()
         responseHeader.set("location", "/api/transaction" + "/" + transaction.id)
-        return ResponseEntity(savedTransaction.toDTO(), HttpStatus.CREATED)
+        return ResponseEntity(savedUser.transactions.last().toDTO(), HttpStatus.CREATED)
     }
 
     @GetMapping
