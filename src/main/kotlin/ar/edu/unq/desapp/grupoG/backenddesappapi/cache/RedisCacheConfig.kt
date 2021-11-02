@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder
 import java.time.Duration
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 @Configuration
@@ -22,7 +24,7 @@ class RedisCacheConfig : CachingConfigurerSupport(), CachingConfigurer {
             val configurationMap: MutableMap<String, RedisCacheConfiguration> =
                 HashMap()
             configurationMap["cacheDollar"] = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofDays(1))
+                .entryTtl(timeLeftToMidnight())
 
 
             configurationMap["cacheCrypto"] = RedisCacheConfiguration.defaultCacheConfig()
@@ -32,5 +34,12 @@ class RedisCacheConfig : CachingConfigurerSupport(), CachingConfigurer {
     }
     override fun errorHandler(): CacheErrorHandler? {
         return RedisCacheErrorHandler()
+    }
+
+    fun timeLeftToMidnight():Duration{
+        val hoursLeft = 23 - LocalTime.now().hour
+        val minutesLeft = 59 - LocalDateTime.now().minute
+
+        return Duration.ofHours(hoursLeft.toLong()) + Duration.ofMinutes(minutesLeft.toLong())
     }
 }
