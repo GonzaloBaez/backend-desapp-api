@@ -1,14 +1,12 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.repositories
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.*
-import javax.swing.text.html.Option
 
 @Configuration
 @Repository
@@ -20,7 +18,7 @@ interface TransactionRepository : JpaRepository<Transaction,Long> {
     @Query("UPDATE transaction t SET state = 'En progreso' WHERE t.id = ?1 ",nativeQuery = true)
     fun updateActivityToInProgress(id:Long)
 
-    @Query("SELECT * from transaction t where t.counter_part_user = ?1",nativeQuery = true)
+    @Query("SELECT * from transaction t where (t.counter_part_user = ?1 AND t.state = 'En progreso') ",nativeQuery = true)
     fun findByCounterPartUserContaining(counterPartUser:String):Optional<List<Transaction>>
 
     @Modifying
