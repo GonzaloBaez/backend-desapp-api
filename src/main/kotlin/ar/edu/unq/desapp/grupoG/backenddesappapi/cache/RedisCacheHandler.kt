@@ -11,16 +11,16 @@ import kotlin.RuntimeException
 
 class RedisCacheErrorHandler : CacheErrorHandler {
 
-    var log : Logger = LoggerFactory.getLogger(RedisCacheErrorHandler::class.java)
+    var log : Logger = LoggerFactory.getLogger("RedisCacheErrorHandler")
 
     override fun handleCacheGetError(exception: RuntimeException, cache: Cache, key: Any) {
         handleTimeOutException(exception);
-        log.info("Unable to get from cache " + cache.name + " : " + exception.message);
+        log.debug("Unable to get from cache " + cache.name + " : " + exception.message);
     }
 
     override fun handleCachePutError(exception: RuntimeException, cache: Cache, key: Any, value: Any?) {
         handleTimeOutException(exception);
-        log.info("Unable to put into cache " + cache.name + " : " + exception.message);
+        log.debug("Unable to put into cache " + cache.name + " : " + exception.message);
     }
 
     override fun handleCacheEvictError(exception: RuntimeException, cache: Cache, key: Any) {

@@ -27,9 +27,14 @@
         </rollingPolicy>
     </appender>
 
+    <logger name="RedisCacheErrorHandler">
+        <!-- Write only from logger named RedisCacheErrorHandler -->
+        <level value="debug"/>
+        <appender-ref ref="RollingFile" />
+    </logger>
+
     <!-- LOG everything at INFO level -->
     <root level="info">
-        <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>
 
