@@ -46,8 +46,8 @@ class TransactionController {
 
     @PutMapping("/activity-{id}-{counterPartUser}/update")
     fun updateActivityToInProgress(@PathVariable("id") id:Long, @PathVariable("counterPartUser") counterPartUser:String):ResponseEntity<Any>{
-        transactionService.updateActivityToInProgress(id)
         transactionService.setCounterPartUser(id,counterPartUser)
+        transactionService.updateActivityToInProgress(id)
         return ResponseEntity(HttpStatus.OK)
     }
 

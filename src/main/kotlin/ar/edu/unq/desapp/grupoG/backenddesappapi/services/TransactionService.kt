@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
@@ -43,8 +44,12 @@ class TransactionService {
     @Transactional
     fun setCounterPartUser(id: Long,counterPartUser: String){
         var transaction = transactionRepository.findById(id).get()
-        transaction.counterPartUser = counterPartUser
-        transactionRepository.save(transaction)
+        if(transaction.counterPartUser == null) {
+            transaction.counterPartUser = counterPartUser
+            transactionRepository.save(transaction)
+        } else{
+            throw BadRequest("Transaction with id $id is in progress or already closed")
+        }
     }
 
     @Transactional

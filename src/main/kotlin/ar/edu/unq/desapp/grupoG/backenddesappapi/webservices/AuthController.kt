@@ -25,14 +25,10 @@ class AuthController {
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/register")
     fun register(@RequestBody user: User): ResponseEntity<Any> {
-        return try {
-            user.password = passwordEncoder.encode(user.password)
-            var savedUser = userService.save(user)
-            val responseHeader = HttpHeaders()
-            responseHeader.set("location","/api/users" + "/" + user.id)
-            ResponseEntity(savedUser, HttpStatus.CREATED)
-        }catch (e: DuplicateUniqueException){
-            ResponseEntity(HttpStatus.BAD_REQUEST)
-        }
+        user.password = passwordEncoder.encode(user.password)
+        var savedUser = userService.save(user)
+        val responseHeader = HttpHeaders()
+        responseHeader.set("location","/api/users" + "/" + user.id)
+        return ResponseEntity(savedUser, HttpStatus.CREATED)
     }
 }
