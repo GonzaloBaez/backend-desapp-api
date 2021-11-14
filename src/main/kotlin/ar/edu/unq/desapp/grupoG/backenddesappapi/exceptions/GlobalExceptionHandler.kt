@@ -21,4 +21,9 @@ class GlobalExceptionHandler {
     fun handleDuplicateValue(exception: DuplicateUniqueException) : ResponseEntity<Any>{
         return ResponseEntity(exception.message,HttpStatus.BAD_REQUEST)
     }
+
+    @ExceptionHandler(InvalidUserInformation::class)
+    fun handleInvalidUserInformation(exception:InvalidUserInformation):ResponseEntity<Any>{
+        return ResponseEntity(exception.message,HttpStatus.BAD_REQUEST)
+    }
 }

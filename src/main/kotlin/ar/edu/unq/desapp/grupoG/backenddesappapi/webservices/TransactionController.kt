@@ -1,6 +1,9 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.TransactionDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
+import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
+import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.TransactionService
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,7 +49,10 @@ class TransactionController {
 
     @PutMapping("/activity-{id}-{counterPartUser}/update")
     fun updateActivityToInProgress(@PathVariable("id") id:Long, @PathVariable("counterPartUser") counterPartUser:String):ResponseEntity<Any>{
-        transactionService.setCounterPartUser(id,counterPartUser)
+        var transaction = transactionService.findById(id)
+        var counterUser = userService.findByEmail(counterPartUser)
+        checkTransactionToPutInProgress(transaction,counterUser)
+        transactionService.setCounterPartUser(transaction,counterPartUser)
         transactionService.updateActivityToInProgress(id)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -63,9 +69,20 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @DeleteMapping("/activity-{id}/{cancelingUser}/delete")
+    fun deleteTransaction(@PathVariable("id") id:Long,@PathVariable("cancelingUser") cancelingUser: String) : ResponseEntity<Any>{
+        var transaction = transactionService.findById(id)
+        checkTransactionToDelete(transaction,cancelingUser)
+        userService.discountToCancelingUser(cancelingUser)
+        userService.deleteTransaction(cancelingUser,transaction)
+        transactionService.deleteTransaction(transaction)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
+    }
+
     @PutMapping("/close/{id}/{counterPartUserEmail}")
     fun closeActivity(@PathVariable("id") id:Long, @PathVariable("counterPartUserEmail") counterPartUserEmail: String):ResponseEntity<Any>{
         var transaction = transactionService.findById(id)
+        checkCloseCondition(transaction)
         userService.closeActivity(transaction,counterPartUserEmail)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -75,5 +92,24 @@ class TransactionController {
         var activities = userService.getActivitiesFromUser(userEmail)
         var activitiesDTO = activities.map { it.toDTO() }
         return ResponseEntity(activitiesDTO,HttpStatus.OK)
+    }
+
+    private fun checkTransactionToPutInProgress(transaction : Transaction, user : User){
+        require(transaction.counterPartUser == null && transaction.state == "Creada" &&
+        transaction.user.email != user.email){
+            throw BadRequest("Can't operate with transaction with id ${transaction.id}")
+        }
+    }
+
+    private fun checkCloseCondition(transaction: Transaction){
+        require(transaction.counterPartUser != null && transaction.state == "En progreso"){
+            throw BadRequest("Can't close transaction with id ${transaction.id}")
+        }
+    }
+
+    private fun checkTransactionToDelete(transaction: Transaction,userEmail:String){
+        require(transaction.user.email == userEmail && transaction.state != "Cerrada"){
+            throw BadRequest("Transaction already closed or it belong to another user")
+        }
     }
 }

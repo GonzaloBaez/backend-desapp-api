@@ -32,16 +32,12 @@ class UserService {
     @Transactional
     @Throws(BadRequest::class)
     fun closeActivity(transaction: Transaction,counterPartUserEmail:String){
-        if(counterPartUserEmail == transaction.counterPartUser) {
             var counterPartUser : User = repository.findByEmail(counterPartUserEmail).get()
             transaction.state = "Cerrada"
             var points = transaction.getPointsForUsers()
             transaction.user.sumPoints(points)
             counterPartUser.sumPoints(points)
             repository.saveAll(listOf(transaction.user,counterPartUser))
-        }else{
-            throw BadRequest("Invalid information to close transaction")
-        }
     }
 
     @Transactional
@@ -89,5 +85,11 @@ class UserService {
         var cancelingUser = findByEmail(cancelingUserEmail)
         cancelingUser.discountPoints()
         repository.save(cancelingUser)
+    }
+
+    @Transactional
+    fun deleteTransaction(userEmail : String, transaction: Transaction){
+        var user = findByEmail(userEmail)
+        user.deleteTransaction(transaction)
     }
 }

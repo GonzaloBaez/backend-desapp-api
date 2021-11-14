@@ -42,13 +42,12 @@ class TransactionService {
     }
 
     @Transactional
-    fun setCounterPartUser(id: Long,counterPartUser: String){
-        var transaction = transactionRepository.findById(id).get()
+    fun setCounterPartUser(transaction: Transaction,counterPartUser: String){
         if(transaction.counterPartUser == null) {
             transaction.counterPartUser = counterPartUser
             transactionRepository.save(transaction)
         } else{
-            throw BadRequest("Transaction with id $id is in progress or already closed")
+            throw BadRequest("Transaction with id ${transaction.id} is in progress or already closed")
         }
     }
 
@@ -64,5 +63,14 @@ class TransactionService {
             throw NotFoundException("Transaction with id $id doesn't exist")
         }
         return optional.get()
+    }
+
+    @Transactional
+    fun deleteTransaction(transaction: Transaction) {
+        try{
+            transactionRepository.delete(transaction)
+        } catch (exception:IllegalArgumentException){
+            throw BadRequest(exception.message)
+        }
     }
 }
