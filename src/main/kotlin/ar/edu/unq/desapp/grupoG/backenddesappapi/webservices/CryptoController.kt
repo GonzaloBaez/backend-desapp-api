@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +23,7 @@ class CryptoController {
         return ResponseEntity(cryptoService.quote(cryptoName),HttpStatus.OK)
     }
 
+    @LogAudit
     @CrossOrigin(origins = ["http://localhost:3000"])
     @GetMapping("quotes")
     fun allCryptos() : ResponseEntity<List<CryptoDTO>>{

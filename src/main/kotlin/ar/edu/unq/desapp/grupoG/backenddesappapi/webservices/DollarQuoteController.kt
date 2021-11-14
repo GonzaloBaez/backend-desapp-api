@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.DollarQuoteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,6 +18,7 @@ class DollarQuoteController {
     @Autowired
     lateinit var dollarQuoteService:DollarQuoteService
 
+    @LogAudit
     @CrossOrigin(origins = ["http://localhost:3000"])
     @GetMapping
     fun quote(): ResponseEntity<Any> {

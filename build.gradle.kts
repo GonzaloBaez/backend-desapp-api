@@ -64,6 +64,7 @@ dependencies {
 	testImplementation("org.junit.vintage:junit-vintage-engine:5.8.0")
 	implementation("log4j:log4j:1.2.17")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:2.5.5")
+	testImplementation("com.tngtech.archunit:archunit-junit5:0.22.0")
 
 }
 

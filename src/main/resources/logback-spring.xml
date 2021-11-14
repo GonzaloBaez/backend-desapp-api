@@ -33,6 +33,13 @@
         <appender-ref ref="RollingFile" />
     </logger>
 
+    <logger name="aspect" additivity="false">
+        <!-- Write only from logger named RedisCacheErrorHandler -->
+        <level value="debug"/>
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="Console" />

@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.InvalidUserInformation
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.User
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
@@ -22,6 +23,7 @@ class AuthController {
     @Autowired
     lateinit var passwordEncoder : PasswordEncoder
 
+    @LogAudit
     @CrossOrigin(origins = ["http://localhost:3000"])
     @PostMapping("/register")
     fun register(@RequestBody user: User): ResponseEntity<Any> {

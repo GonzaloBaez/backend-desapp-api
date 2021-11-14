@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
 import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.TransactionDTO
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.model.Transaction
@@ -25,6 +26,7 @@ class TransactionController {
     @Autowired
     lateinit var userService: UserService
 
+    @LogAudit
     @PostMapping("/create")
     fun create(@RequestBody transactionDTO: TransactionDTO): ResponseEntity<Any> {
         var user = userService.findByEmail(transactionDTO.user)
@@ -47,6 +49,7 @@ class TransactionController {
         return transactionService.findByState("Creada").map { it.toDTO() }
     }
 
+    @LogAudit
     @PutMapping("/activity-{id}-{counterPartUser}/update")
     fun updateActivityToInProgress(@PathVariable("id") id:Long, @PathVariable("counterPartUser") counterPartUser:String):ResponseEntity<Any>{
         var transaction = transactionService.findById(id)
