@@ -32,7 +32,8 @@ class UserService {
     @Transactional
     @Throws(BadRequest::class)
     fun closeActivity(transaction: Transaction,counterPartUserEmail:String){
-            var counterPartUser : User = repository.findByEmail(counterPartUserEmail).get()
+            var counterPartUser : User = findByEmail(counterPartUserEmail)
+            checkCloseCondition(transaction,counterPartUser)
             transaction.state = "Cerrada"
             var points = transaction.getPointsForUsers()
             transaction.user.sumPoints(points)
@@ -91,5 +92,11 @@ class UserService {
     fun deleteTransaction(userEmail : String, transaction: Transaction){
         var user = findByEmail(userEmail)
         user.deleteTransaction(transaction)
+    }
+
+    private fun checkCloseCondition(transaction: Transaction,user: User){
+        require(transaction.counterPartUser == user.email){
+            throw BadRequest("Transaction with id ${transaction.id} belongs to another user")
+        }
     }
 }
