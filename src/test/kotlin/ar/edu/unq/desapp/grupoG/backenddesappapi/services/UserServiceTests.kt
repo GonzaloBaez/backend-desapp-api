@@ -186,10 +186,10 @@ class UserServiceTests {
 		var olderPointsUser = user.points
 		var olderPointsOtherUser = otherUser.points
 
-		Mockito.`when`(transaction.counterPartUser).thenReturn("saraza")
 		Mockito.`when`(userRepository.findByEmail("saraza")).thenReturn(Optional.of(otherUser))
 		Mockito.`when`(transaction.getPointsForUsers()).thenReturn(10)
 		Mockito.`when`(transaction.user).thenReturn(user)
+		Mockito.`when`(transaction.counterPartUser).thenReturn("saraza")
 
 		userService.closeActivity(transaction,"saraza")
 
@@ -207,12 +207,13 @@ class UserServiceTests {
 		user.addTransaction(transaction)
 
 		Mockito.`when`(transaction.counterPartUser).thenReturn("otherThing")
+		Mockito.`when`(userRepository.findByEmail("saraza")).thenReturn(Optional.of(otherUser))
 
 		var error = assertThrows(BadRequest::class.java){
 			userService.closeActivity(transaction,otherUser.email)
 		}
 
-		assertEquals("Invalid information to close transaction",error.message)
+		assertEquals("Transaction with id 0 belongs to another user",error.message)
 		assertEquals(0,user.points)
 		assertEquals(0,otherUser.points)
 	}

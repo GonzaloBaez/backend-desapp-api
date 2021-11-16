@@ -92,11 +92,15 @@ class TransactionControllerTest {
     @Test
     fun updateATransactionToInProgressState(){
         var transaction = transactionBuilder.build()
+        var user = userBuilder.withEmail("z2@gmail.com").build()
+
+        Mockito.`when`(transactionService.findById(transaction.id)).thenReturn(transaction)
+        Mockito.`when`(userService.findByEmail("z2@gmail.com")).thenReturn(user)
 
         transactionController.updateActivityToInProgress(transaction.id,"z2@gmail.com")
 
         Mockito.verify(transactionService, times(1)).updateActivityToInProgress(transaction.id)
-        Mockito.verify(transactionService,times(1)).setCounterPartUser(transaction.id,"z2@gmail.com")
+        Mockito.verify(transactionService,times(1)).setCounterPartUser(transaction,"z2@gmail.com")
     }
 
     @Test
@@ -127,11 +131,20 @@ class TransactionControllerTest {
     @Test
     fun closeActivity(){
         var transaction = transactionBuilder.build()
+        var user = userBuilder.withEmail("z2@gmail.com").build()
 
+        Mockito.`when`(userService.findByEmail(user.email)).thenReturn(user)
         Mockito.`when`(transactionService.findById(transaction.id)).thenReturn(transaction)
-        transactionController.closeActivity(transaction.id,"z2@gmail.com")
+        Mockito.`when`(transactionService.updateActivityToInProgress(transaction.id)).then {
+            transaction.state = "En progreso"
+            transaction.counterPartUser = "z2@gmail.com"
+            transaction
+        }
+        transactionController.updateActivityToInProgress(transaction.id,"z2@gmail.com")
+        var response = transactionController.closeActivity(transaction.id,"z2@gmail.com")
 
         Mockito.verify(userService, times(1)).closeActivity(transaction,"z2@gmail.com")
+        assertEquals(HttpStatus.OK,response.statusCode)
     }
 
     @Test

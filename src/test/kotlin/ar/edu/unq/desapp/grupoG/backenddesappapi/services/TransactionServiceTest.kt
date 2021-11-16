@@ -99,9 +99,8 @@ class TransactionServiceTest {
     fun setUserCounterPartToTransaction(){
         var transaction = transactionBuilder.build()
 
-        Mockito.`when`(transactionRepository.findById(transaction.id)).thenReturn(Optional.of(transaction))
 
-        transactionService.setCounterPartUser(transaction.id,"z2@gmail.com")
+        transactionService.setCounterPartUser(transaction,"z2@gmail.com")
 
         Mockito.verify(transactionRepository,times(1)).save(transaction)
         assertEquals(transaction.counterPartUser,"z2@gmail.com")
@@ -123,7 +122,6 @@ class TransactionServiceTest {
     fun cancelActivity(){
         var transaction = transactionBuilder.build()
 
-        Mockito.`when`(transactionRepository.findById(transaction.id)).thenReturn(Optional.of(transaction))
         Mockito.`when`(transactionRepository.updateActivityToInProgress(transaction.id)).then {
             transaction.state = "En progreso"
             transaction}
@@ -132,7 +130,7 @@ class TransactionServiceTest {
                 transaction.counterPartUser = null
                 transaction}
         transactionService.updateActivityToInProgress(transaction.id)
-        transactionService.setCounterPartUser(transaction.id,"z2@gmail.com")
+        transactionService.setCounterPartUser(transaction,"z2@gmail.com")
         val transactionOldState = transaction.state
         val transactionOldCounterpartUser = transaction.counterPartUser
 
