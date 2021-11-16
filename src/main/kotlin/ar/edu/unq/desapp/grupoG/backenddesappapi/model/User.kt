@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.model
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.UserDTO
-import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
@@ -21,7 +20,7 @@ data class User(@Column(length = 30) var name : String, @Column(length = 30) var
     @JsonIgnore
     var transactions : MutableList<Transaction> = mutableListOf()
 
-    fun newOperation() {
+    private fun newOperation() {
         operations++
     }
 
@@ -46,7 +45,7 @@ data class User(@Column(length = 30) var name : String, @Column(length = 30) var
 
     fun deleteTransaction(transaction: Transaction){
         var result = transactions.remove(transaction)
-        if(!result)
+        if(result)
             operations--
     }
 
