@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
 import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtResponse
 import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtTokenUtil
@@ -26,6 +27,7 @@ class JwtAuthenticationController {
     @Autowired
     lateinit var userDetailsService: JwtUserDetailsService
 
+    @LogAudit
     @CrossOrigin(origins = ["http://localhost:3000"])
     @RequestMapping(value = ["/authenticate"], method = [RequestMethod.POST])
     @Throws(Exception::class)
@@ -37,6 +39,7 @@ class JwtAuthenticationController {
         return ResponseEntity.ok<Any>(JwtResponse(token))
     }
 
+    @LogAudit
     @Throws(Exception::class)
     private fun authenticate(username: String, password: String) {
         try {

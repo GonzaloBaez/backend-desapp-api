@@ -39,11 +39,13 @@ class TransactionController {
         return ResponseEntity(savedUser.transactions.last().toDTO(), HttpStatus.CREATED)
     }
 
+    @LogAudit
     @GetMapping
     fun allTransactions(): List<TransactionDTO> {
         return transactionService.findAll().map { it.toDTO() }
     }
 
+    @LogAudit
     @GetMapping("/activities")
     fun allActivities(): List<TransactionDTO> {
         return transactionService.findByState("Creada").map { it.toDTO() }
@@ -60,11 +62,13 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @LogAudit
     @GetMapping("/pending-activities/{userEmail}")
     fun activitiesFromCounterPartUser(@PathVariable("userEmail") userEmail:String):List<TransactionDTO> {
         return transactionService.findByCounterPartUser(userEmail).map { it.toDTO() }
     }
 
+    @LogAudit
     @PutMapping("/activity-{id}-{cancelingUser}/delete")
     fun cancelActivity(@PathVariable("id") id:Long, @PathVariable("cancelingUser") cancelingUser:String): ResponseEntity<Any>{
         transactionService.cancelActivity(id)
@@ -72,6 +76,7 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @LogAudit
     @DeleteMapping("/activity-{id}/{cancelingUser}/delete")
     fun deleteTransaction(@PathVariable("id") id:Long,@PathVariable("cancelingUser") cancelingUser: String) : ResponseEntity<Any>{
         var transaction = transactionService.findById(id)
@@ -82,6 +87,7 @@ class TransactionController {
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
+    @LogAudit
     @PutMapping("/close/{id}/{counterPartUserEmail}")
     fun closeActivity(@PathVariable("id") id:Long, @PathVariable("counterPartUserEmail") counterPartUserEmail: String):ResponseEntity<Any>{
         var transaction = transactionService.findById(id)
@@ -90,6 +96,7 @@ class TransactionController {
         return ResponseEntity(HttpStatus.OK)
     }
 
+    @LogAudit
     @GetMapping("/activities/{userEmail}")
     fun getActivitiesByUser(@PathVariable("userEmail") userEmail:String): ResponseEntity<Any>{
         var activities = userService.getActivitiesFromUser(userEmail)
