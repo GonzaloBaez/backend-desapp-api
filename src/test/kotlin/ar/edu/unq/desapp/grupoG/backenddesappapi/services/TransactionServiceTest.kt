@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.TransactionBuilder
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.UserBuilder
+import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.BadRequest
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.repositories.TransactionRepository
 import org.junit.Before
@@ -14,6 +15,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.boot.test.context.SpringBootTest
+import java.lang.IllegalArgumentException
 import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
@@ -107,6 +109,18 @@ class TransactionServiceTest {
     }
 
     @Test
+    fun setCounterPartShouldFailIfCounterParUserIsNotNull(){
+        var transaction = transactionBuilder.build()
+        transaction.counterPartUser = "sazara@gmail.com"
+
+        val error = assertThrows(BadRequest::class.java){
+            transactionService.setCounterPartUser(transaction,"z2@gmail.com")
+        }
+
+        assertEquals("Transaction with id ${transaction.id} is in progress or already closed",error.message)
+    }
+
+    @Test
     fun findByUserContaining(){
         var transaction = transactionBuilder.build()
         var userOne = UserBuilder().withEmail("saraza").build()
@@ -140,6 +154,28 @@ class TransactionServiceTest {
         assertEquals(transaction.state,"Creada")
         assertNotEquals(transaction.state,transactionOldState)
         assertNotEquals(transaction.counterPartUser,transactionOldCounterpartUser)
+    }
+
+    @Test
+    fun deleteAnExistingTransaction(){
+        val transaction = transactionBuilder.build()
+        Mockito.`when`(transactionRepository.save(transaction)).thenReturn(transaction)
+
+        transactionService.save(transaction)
+        transactionService.deleteTransaction(transaction)
+
+        Mockito.verify(transactionRepository, times(1)).delete(transaction)
+    }
+
+    @Test
+    fun `deleteShouldFailWithBadRequestIfTransactionDoesn'tExist`(){
+        val transaction = transactionBuilder.build()
+
+        Mockito.`when`(transactionRepository.delete(transaction)).thenThrow(IllegalArgumentException::class.java)
+
+        assertThrows(BadRequest::class.java){
+            transactionService.deleteTransaction(transaction)
+        }
     }
 
 

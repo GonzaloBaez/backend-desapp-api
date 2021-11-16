@@ -77,8 +77,8 @@ class TransactionController {
         var transaction = transactionService.findById(id)
         checkTransactionToDelete(transaction,cancelingUser)
         userService.discountToCancelingUser(cancelingUser)
-        userService.deleteTransaction(cancelingUser,transaction)
         transactionService.deleteTransaction(transaction)
+        userService.deleteTransaction(cancelingUser,transaction)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 

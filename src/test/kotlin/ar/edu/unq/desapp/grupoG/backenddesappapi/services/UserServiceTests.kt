@@ -218,6 +218,22 @@ class UserServiceTests {
 		assertEquals(0,otherUser.points)
 	}
 
+	@Test
+	fun deleteTransactionFromUser(){
+		var user = userBuilder.withEmail("saraza@gmail.com").build()
+		user.addTransaction(transaction)
+		val oldOperations = user.operations
+
+		Mockito.`when`(userRepository.findByEmail("saraza@gmail.com")).thenReturn(Optional.of(user))
+
+		userService.deleteTransaction("saraza@gmail.com",transaction)
+
+		assertEquals(0,user.transactions.size)
+		assertEquals(0,user.operations)
+		assertEquals(1,oldOperations)
+		Mockito.verify(userRepository, times(1)).save(user)
+	}
+
 	@After
 	fun clear(){
 		userService.clearDatabase()

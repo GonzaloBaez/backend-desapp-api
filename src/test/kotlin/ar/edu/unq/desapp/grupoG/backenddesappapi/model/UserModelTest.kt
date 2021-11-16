@@ -61,4 +61,19 @@ class UserModelTest {
         assertEquals(userDTO.operations,2)
         assertEquals(userDTO.reputation,"5")
     }
+
+    @Test
+    fun deleteTransactionFromUser(){
+        var newUser = userBuilder.build()
+        newUser.addTransaction(transaction)
+        newUser.addTransaction(transaction)
+
+        val oldOperations = newUser.operations
+
+        newUser.deleteTransaction(transaction)
+
+        assertEquals(1,newUser.transactions.size)
+        assertEquals(1,newUser.operations)
+        assertTrue(oldOperations>newUser.operations)
+    }
 }

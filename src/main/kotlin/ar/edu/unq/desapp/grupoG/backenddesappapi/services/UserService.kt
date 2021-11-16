@@ -92,6 +92,7 @@ class UserService {
     fun deleteTransaction(userEmail : String, transaction: Transaction){
         var user = findByEmail(userEmail)
         user.deleteTransaction(transaction)
+        repository.save(user)
     }
 
     private fun checkCloseCondition(transaction: Transaction,user: User){
