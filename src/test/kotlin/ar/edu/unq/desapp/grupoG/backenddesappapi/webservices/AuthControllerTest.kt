@@ -6,6 +6,7 @@ import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -43,9 +44,9 @@ class AuthControllerTest {
     }
 
     @Test
-    fun registerShouldResponseWithBadRequestIfEmailAlreadyExist(){
+    fun registerShouldFailWithDuplicateUniqueIfEmailAlreadyExist(){
         val newUser = userBuilder.withEmail("user@gmail.com").build()
-        val newUserTwo = userBuilder.withWallet("123145").withEmail("user@gmail.com").build()
+        val newUserTwo = userBuilder.withWallet("12314556").withEmail("user@gmail.com").build()
 
         Mockito.`when`(userService.save(newUser)).thenReturn(newUser)
         Mockito.`when`(passwordEncoder.encode(newUserTwo.password)).thenReturn("\$2a\$10$/zNDbzGLuyADbN0Gwf.9rqcLYwfu2L1QrocnAw1VdbhhmNs2Zu")
@@ -53,24 +54,26 @@ class AuthControllerTest {
 
         authController.register(newUser)
 
-        var response = authController.register(newUserTwo)
-
-        assertEquals(HttpStatus.BAD_REQUEST,response.statusCode)
+        assertThrows(DuplicateUniqueException::class.java){
+            authController.register(newUserTwo)
+        }
     }
 
     @Test
-    fun registerShouldResponseWithBadRequestIfWalletAlreadyExist(){
-        val newUser = userBuilder.withWallet("123145").withEmail("user@gmail.com").build()
-        val newUserTwo = userBuilder.withWallet("123145").build()
+    fun registerShouldFailWithDuplicateUniqueIfWalletAlreadyExist(){
+        val newUser = userBuilder.withWallet("12314555").withEmail("user@gmail.com").build()
+        val newUserTwo = userBuilder.withWallet("12314555").build()
 
         Mockito.`when`(userService.save(newUser)).thenReturn(newUser)
         Mockito.`when`(passwordEncoder.encode(newUserTwo.password)).thenReturn("\$2a\$10$/zNDbzGLuyADbN0Gwf.9rqcLYwfu2L1QrocnAw1VdbhhmNs2Zu")
-        Mockito.`when`(userService.save(newUserTwo)).thenThrow(DuplicateUniqueException::class.java)
+        Mockito.`when`(userService.save(newUserTwo)).thenThrow(
+            DuplicateUniqueException("Wallet ${newUserTwo.wallet} or Email ${newUserTwo.email} already exist"))
 
         authController.register(newUser)
 
-        var response = authController.register(newUserTwo)
-
-        assertEquals(HttpStatus.BAD_REQUEST,response.statusCode)
+        var error = assertThrows(DuplicateUniqueException::class.java) {
+            authController.register(newUserTwo)
+        }
+        assertEquals("Wallet ${newUserTwo.wallet} or Email ${newUserTwo.email} already exist",error.message)
     }
 }
