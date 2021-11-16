@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.services.JwtUserDetailsService
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -38,9 +39,9 @@ class JwtRequestFilter : OncePerRequestFilter() {
             try {
                 username = jwtTokenUtil!!.getUsernameFromToken(jwtToken)
             } catch (e: IllegalArgumentException) {
-                println("Unable to get JWT Token")
+                logger.warn("Unable to get JWT Token")
             } catch (e: ExpiredJwtException) {
-                println("JWT Token has expired")
+                logger.warn("JWT Token has expired")
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String")
