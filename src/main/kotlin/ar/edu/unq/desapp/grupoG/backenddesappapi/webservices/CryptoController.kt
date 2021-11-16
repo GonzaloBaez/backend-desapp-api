@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.aspects.LogAudit
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.CryptoDTO
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.CryptoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

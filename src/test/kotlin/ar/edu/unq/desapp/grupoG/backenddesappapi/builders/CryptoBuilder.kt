@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.builders
 
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.CryptoDTO
 
 class CryptoBuilder(
     var symbol : String = "BNBUSDT",

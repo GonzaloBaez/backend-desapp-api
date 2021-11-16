@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.builders
 
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.DollarQuoteDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.DollarQuoteDTO
 
 class DollarBuilder(
     var d : String = "2/10/2021",

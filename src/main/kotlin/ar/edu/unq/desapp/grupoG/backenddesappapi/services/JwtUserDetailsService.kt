@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig
+package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.exceptions.NotFoundException
 import ar.edu.unq.desapp.grupoG.backenddesappapi.services.UserService

@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.DollarQuoteDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.DollarQuoteDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference

@@ -1,5 +1,9 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig
+package ar.edu.unq.desapp.grupoG.backenddesappapi.webservices
 
+import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtRequest
+import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtResponse
+import ar.edu.unq.desapp.grupoG.backenddesappapi.securityConfig.JwtTokenUtil
+import ar.edu.unq.desapp.grupoG.backenddesappapi.services.JwtUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager

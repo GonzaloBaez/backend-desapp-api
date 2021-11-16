@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupoG.backenddesappapi.services
 
 import ar.edu.unq.desapp.grupoG.backenddesappapi.builders.CryptoBuilder
-import ar.edu.unq.desapp.grupoG.backenddesappapi.model.CryptoDTO
+import ar.edu.unq.desapp.grupoG.backenddesappapi.dto.CryptoDTO
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -36,7 +36,8 @@ class CryptoServiceTest {
     fun gettingBNBUSDTCrypto(){
         var crypto = cryptoBuilder.build()
 
-        Mockito.`when`(restTemplate.getForEntity("https://api1.binance.com/api/v3/ticker/price?symbol=${crypto.symbol}",CryptoDTO::class.java))
+        Mockito.`when`(restTemplate.getForEntity("https://api1.binance.com/api/v3/ticker/price?symbol=${crypto.symbol}",
+            CryptoDTO::class.java))
             .thenReturn(ResponseEntity(crypto,HttpStatus.OK))
 
         var crypto2 = cryptoService.quote(crypto.symbol)

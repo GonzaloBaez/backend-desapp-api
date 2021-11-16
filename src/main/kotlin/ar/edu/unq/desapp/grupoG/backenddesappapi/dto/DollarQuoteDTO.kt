@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupoG.backenddesappapi.model
+package ar.edu.unq.desapp.grupoG.backenddesappapi.dto
 
 import java.io.Serializable
 
