@@ -65,6 +65,10 @@ class TransactionService {
         return optional.get()
     }
 
+    fun clearDatabase(){
+        transactionRepository.deleteAllInBatch()
+    }
+
     @Transactional
     fun deleteTransaction(transaction: Transaction) {
         try{
